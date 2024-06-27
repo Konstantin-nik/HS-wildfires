@@ -33,7 +33,6 @@ def parse_args():
     parser.add_argument('--dest_prefix', type=str, required=True)
     parser.add_argument('--region', type=str, required=True)
     parser.add_argument('--seed', type=int, required=False, default=1)
-    parser.add_argument('--output_path', type=str, required=True)
 
     args = parser.parse_args()
     return args

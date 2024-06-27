@@ -19,7 +19,7 @@ def get_deployment_step(
     # best_model_file: str,
     # result_prefix: str,
     # data_dir: str,
-    # model_package_arn: str
+    model_package_arn: str
 ):
     evaluation_processor = ScriptProcessor(
         role=sagemaker.get_execution_role(),
@@ -34,7 +34,7 @@ def get_deployment_step(
         processor=evaluation_processor,
         code="deployment_step.py",
         job_arguments=[
-            # '--test_metadata_bucket', bucket_name,
+            '--bucket_name', bucket_name,
             # '--best_model_bucket', bucket_name,
             # '--test_metadata_prefix', test_metadata_prefix,
             # '--best_model_prefix', best_model_prefix,
@@ -44,7 +44,7 @@ def get_deployment_step(
             # '--result_prefix', result_prefix,
             # '--result_file', 'eva-result-',
             # '--data_dir', data_dir,
-            # '--model_package_arn', model_package_arn,
+            '--model_package_arn', model_package_arn,
             '--region', region
         ],
     )

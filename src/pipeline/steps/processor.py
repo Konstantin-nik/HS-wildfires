@@ -1,8 +1,7 @@
+import sagemaker
+
 from sagemaker.workflow.steps import ProcessingStep
 from sagemaker.sklearn.processing import ScriptProcessor
-from sagemaker.workflow.functions import Join
-from sagemaker.processing import ProcessingOutput
-import sagemaker
 
 
 def get_processor_step(
@@ -12,6 +11,7 @@ def get_processor_step(
     process_instance_type_param: str,
     sklearn_image_uri: str,
     region: str,
+    seed: int
 ):
     processing_processor = ScriptProcessor(
         role=sagemaker.get_execution_role(),
@@ -31,6 +31,6 @@ def get_processor_step(
             '--dest_bucket', bucket_name,
             '--dest_prefix', 'data/raw_data/',
             '--region', region,
-            '--seed', '42',
+            '--seed', seed
         ],
     )

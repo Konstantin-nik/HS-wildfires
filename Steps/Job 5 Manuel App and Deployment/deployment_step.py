@@ -25,7 +25,7 @@ from torch.utils.data import Dataset, DataLoader
 def parse_args():
     parser = argparse.ArgumentParser()
 
-    # parser.add_argument('--test_metadata_bucket', type=str, required=True)
+    parser.add_argument('--bucket_name', type=str, required=True)
     # parser.add_argument('--test_metadata_prefix', type=str, required=True)
     # parser.add_argument('--test_metadata_file', type=str, required=True)
     # parser.add_argument('--best_model_bucket', type=str, required=True)
@@ -35,7 +35,7 @@ def parse_args():
     # parser.add_argument('--result_prefix', type=str, required=True)
     # parser.add_argument('--result_file', type=str, required=True)
     # parser.add_argument('--data_dir', type=str, required=True)
-    # parser.add_argument('--model_package_arn', type=str, required=True)
+    parser.add_argument('--model_package_arn', type=str, required=True)
     # parser.add_argument('--batch_size', type=int, required=False, default=32)
     parser.add_argument('--region', type=str, required=True)
 
@@ -57,10 +57,40 @@ if __name__ == '__main__':
     s3 = boto3.client('s3')
     print('Deployment job is started')
 
-
+    BUCKET_NAME = args.bucket_name
+    model_package_arn = args.model_package_arn
+    model_filename = args.model_filename
+    model_prefix = args.model_prefix
+    model_path = f"{model_prefix}/{model_filename}.tar.gz"
 
     
-    
+    s3.download_file('wildfires', f'model_status/{model_package_arn}.json', 'status.json')
 
+    with open('status.json', 'r') as file:
+        status = json.load(file)
+
+    status['ApprovalStatus'] = "Deployed"
+
+    with open('data.json', 'w') as file:
+        json.dump(status, file)
+
+    s3.upload_file(
+        f'data.json',
+        BUCKET_NAME,
+        f"model_status/{model_package_arn}.json",
+    )
+
+    print('Model Status is changed')
+
+    print('Model Deployment is started')
+
+
+    model = PyTorchModel(
+        model_data=f"s3://{BUCKET_NAME}/{model_path}",
+        role=role,
+        framework_version='2.0.0',
+        py_version='py310',
+        entry_point='inference.py'
+    )
 
     print('Job is Finished')
