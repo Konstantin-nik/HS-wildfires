@@ -30,7 +30,7 @@ def get_trainer_step(
             'MLFLOW_TRACKING_URIs': tracking_server_arn,
             'MLFLOW_EXPERIMENT_NAME': f"{project}-training-pipeline",
         },
-        # dependencies=['requirements.txt'],
+        dependencies=['../model/requirements.txt'],
         hyperparameters={
             'num-epochs': epochs_num,
             'batch-size': batch_size,

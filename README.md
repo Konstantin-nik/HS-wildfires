@@ -8,6 +8,10 @@ The objective is to use the endpoint to detect fire in streaming security camera
 
 The code presented here was developed for SageMaker, and its proper testing should be done within the JupyterLab service.
 
+### MLOps Playground
+
+In the folder `mlops_playground`, all code during the course is playsed. The `Step` folder containg the development process for the pipline and the file `src` contains the final pipeline.
+
 ## Data
 
 We use open datasets found on the internet:
@@ -25,7 +29,13 @@ This copying process is done **manually through the AWS UI or using the terminal
 
 ## Pipeline
 
+Inside the `src` folder, the `create_pipeline.ipynb` contains the instructions to create our pipline.
+
+### Steps
+
 Each `Job #` folder is a step in the pipeline. Each one has a jupuyter noteboook that calls a job inside sagemakcer to perform the task descirbed in the folder name:
 
 * *Job 1 preprocess*: Data is taken from the s2 bucket, trasfromed in size and format and ingest it to the feature store (FS)
 * *Job 2 training*: A Resnet is trained uisng the data from the FS in a training job.
+* *Job 3 evaluation*: Evaluate the model
+* *Job 4 deploy*: Deploy the model
