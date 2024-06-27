@@ -1,0 +1,15 @@
+artifact_uri: file:///home/sagemaker-user/Steps/Job%204%20evulation/mlruns/987654602931262724/437aa5d0bd6d46a99f66556790995227/artifacts
+end_time: 1719476046302
+entry_point_name: ''
+experiment_id: '987654602931262724'
+lifecycle_stage: active
+run_id: 437aa5d0bd6d46a99f66556790995227
+run_name: Wildfires-evaluation-dumm
+run_uuid: 437aa5d0bd6d46a99f66556790995227
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1719476046291
+status: 3
+tags: []
+user_id: sagemaker-user

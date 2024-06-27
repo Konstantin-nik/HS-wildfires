@@ -1,0 +1,6 @@
+artifact_location: file:///home/sagemaker-user/Steps/Job%204%20evulation/mlruns/987654602931262724
+creation_time: 1719475811390
+experiment_id: '987654602931262724'
+last_update_time: 1719475811390
+lifecycle_stage: active
+name: Wildfires-evaluation
