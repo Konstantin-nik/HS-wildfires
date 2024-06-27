@@ -10,3 +10,4 @@
 .sparkmagic/
 .virtual_documents/
 .ipynb_checkpoints/
+.ssh/
