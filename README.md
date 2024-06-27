@@ -29,7 +29,11 @@ This copying process is done **manually through the AWS UI or using the terminal
 
 ## Pipeline
 
-Inside the `src` folder, the `create_pipeline.ipynb` contains the instructions to create our pipline.
+Inside the src folder, the create_pipeline.ipynb notebook contains the instructions to create our pipeline, with calls to the different jobs:
+
+* `steps/processor.py`: Processes the data.
+* `steps/trainer.py`: Trains the model.
+* `steps/evaluator.py`: Evaluates the model and registers the metrics.
 
 ### Steps
 
