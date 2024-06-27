@@ -1,0 +1,12 @@
+.autovizwidget/
+.bashrc
+.cache/
+.ipython/
+.jupyter/
+.lesshst
+.local/
+.npm/
+.sagemaker_sql_editor_api_cache/
+.sparkmagic/
+.virtual_documents/
+.ipynb_checkpoints/
