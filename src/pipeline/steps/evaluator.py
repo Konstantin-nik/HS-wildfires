@@ -45,6 +45,14 @@ def get_evaluator_step(
                     values=[f"s3://{bucket_name}", "evaluation_results"],
                 ),
                 output_name="evaluation_result",
+            ),
+            ProcessingOutput(
+                source="/opt/ml/processing/output/model_arn.json",
+                destination=Join(
+                    on="/",
+                    values=[f"s3://{bucket_name}", "models/last/model_arn.json"],
+                ),
+                output_name="model_arn",
             )
         ],
         job_arguments=[

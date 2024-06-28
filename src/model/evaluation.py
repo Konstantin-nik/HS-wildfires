@@ -196,8 +196,8 @@ if __name__ == '__main__':
     model = models.resnet18(weights='ResNet18_Weights.DEFAULT')
     num_ftrs = model.fc.in_features
     model.fc = nn.Linear(num_ftrs, 2)
-    s3.download_file('wildfires', 'code/inference.py', 'code/inference.py')
-    model.load_state_dict(torch.load(f'{args.model_path}/model.pth', map_location=device))
+    s3.download_file('wildfires', 'models/last/model.pth', '/tmp/model.pth')
+    model.load_state_dict(torch.load('/tmp/model.pth', map_location=device))
     print('Best Model is loaded')
 
     criterion = nn.CrossEntropyLoss()
@@ -253,6 +253,8 @@ if __name__ == '__main__':
 
     with open('/opt/ml/processing/output/model_arn.json', mode='w') as f:
         json.dumps({"ARN": model_package.model_package_arn}, f)
+
+    s3.put_object(Bucket=args.bucket, Key='models/last/model_arn.json', Body='/opt/ml/processing/output/model_arn.json')
 
     sm_session.update_model_package(
         ModelPackageArn=model_package.model_package_arn,

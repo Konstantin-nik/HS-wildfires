@@ -319,7 +319,8 @@ if __name__ == '__main__':
         )
 
         torch.save(best_model_state, model_path)
-        torch.save(best_model_state, f'/opt/ml/model/model.pth')
+        torch.save(best_model_state, '/opt/ml/model/model.pth')
+        s3.put_object(Bucket=args.bucket, Key='models/last/model.pth', Body='/opt/ml/model/model.pth')
         mlflow.pytorch.log_model(model, artifact_path="models")
 
         mlflow.end_run(status='FINISHED')
