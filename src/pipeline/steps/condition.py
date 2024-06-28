@@ -3,8 +3,6 @@ from sagemaker.workflow.functions import Join, JsonGet
 from sagemaker.workflow.conditions import ConditionEquals
 from sagemaker.workflow.steps import ProcessingStep
 from sagemaker.workflow.fail_step import FailStep
-import boto3
-import sagemaker
 
 
 def get_conditional_step(
@@ -18,6 +16,7 @@ def get_conditional_step(
     model_path: str,
     wait_step: ProcessingStep,
     deployment_step: ProcessingStep,
+    model_package_arn: str,
     condition_step_suffix: str
 ):
     print("Starting conditional_step")
@@ -26,18 +25,6 @@ def get_conditional_step(
         name=f"{project}-fail",
         error_message="Execution failed due to ApproveStatus"
     )
-
-    boto_session = boto3.Session(region_name=region)
-    sm_session = sagemaker.Session(boto_session)
-
-    s3 = boto3.client('s3')
-
-    s3.download_file('wildfires', 'models/last/model_arn.json', 'model_arn.json')
-
-    with open('model_arn.json', 'r') as file:
-        model_arn = json.load(file)
-
-    model_package_arn = model_arn['ARN']
 
     return ConditionStep(
         name=f"CheckIfApproved{condition_step_suffix}",
