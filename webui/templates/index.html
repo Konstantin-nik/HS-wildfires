@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fire Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        .container {
+            text-align: center;
+        }
+        .upload-area {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            border: 2px dashed #007BFF;
+            position: relative;
+        }
+        .upload-area:hover {
+            background-color: #f0f0f0;
+        }
+        .upload-area img {
+            max-width: 100%;
+            max-height: 300px;
+            margin-top: 20px;
+        }
+        .upload-area p {
+            margin: 0;
+            font-size: 1.2em;
+            color: #007BFF;
+        }
+        #file-input {
+            display: none;
+        }
+        .button-wrapper {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Fire Detection</h1>
+        <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data">
+            <div class="upload-area" id="upload-area">
+                <p>Drag & Drop your file here or Click to select</p>
+                <input type="file" name="file" id="file-input" accept="image/*" required>
+                <img id="preview-image" src="" alt="Image Preview" style="display:none;">
+            </div>
+            <div class="button-wrapper" id="button-wrapper" style="display:none;">
+                <button type="submit" id="submit-button">Check for Fire</button>
+            </div>
+        </form>
+        <div id="result">
+            {% if result %}
+                <p>{{ result }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        const uploadArea = document.getElementById('upload-area');
+        const fileInput = document.getElementById('file-input');
+        const previewImage = document.getElementById('preview-image');
+        const submitButton = document.getElementById('submit-button');
+        const buttonWrapper = document.getElementById('button-wrapper');
+
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                displayImagePreview(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                displayImagePreview(fileInput.files[0]);
+            }
+        });
+
+        function displayImagePreview(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImage.src = e.target.result;
+                previewImage.style.display = 'block';
+                buttonWrapper.style.display = 'flex';
+                uploadArea.querySelector('p').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+    </script>
+</body>
+</html>
