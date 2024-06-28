@@ -3,23 +3,12 @@ import sys
 
 subprocess.check_call([sys.executable, "-m", "pip", "install", "sagemaker", "boto3"])
 
-import os
 import boto3
 import sagemaker
-import torch
 import argparse
-import pickle
-import numpy as np
 import json
-import tarfile
 
-import torch.nn as nn
-import torch.optim as optim
-
-from PIL import Image
-from torchvision import models
-from torchvision import transforms
-from torch.utils.data import Dataset, DataLoader
+from sagemaker.pytorch import PyTorchModel
 
 
 def parse_args():
@@ -29,8 +18,8 @@ def parse_args():
     # parser.add_argument('--test_metadata_prefix', type=str, required=True)
     # parser.add_argument('--test_metadata_file', type=str, required=True)
     # parser.add_argument('--best_model_bucket', type=str, required=True)
-    # parser.add_argument('--best_model_prefix', type=str, required=True)
-    # parser.add_argument('--best_model_file', type=str, required=True)
+    parser.add_argument('--model_prefix', type=str, required=True)
+    parser.add_argument('--model_filename', type=str, required=True)
     # parser.add_argument('--result_bucket', type=str, required=True)
     # parser.add_argument('--result_prefix', type=str, required=True)
     # parser.add_argument('--result_file', type=str, required=True)
@@ -46,15 +35,15 @@ def parse_args():
 if __name__ == '__main__':
     args = parse_args()
 
-    boto_session = boto3.Session()
-    region = boto_session.region_name
-
-    print(region)
+    boto_session = boto3.Session(region_name=args.region)
+    sm_session = sagemaker.Session(boto_session)
+    # sm = boto3.client('sagemaker', region_name=args.region)
+    
     print(args.region)
 
-    sm = boto3.client('sagemaker', region_name='eu-central-1')
-
     s3 = boto3.client('s3')
+    role = sagemaker.get_execution_role(sagemaker_session=sm_session)
+    
     print('Deployment job is started')
 
     BUCKET_NAME = args.bucket_name
@@ -84,13 +73,20 @@ if __name__ == '__main__':
 
     print('Model Deployment is started')
 
-
     model = PyTorchModel(
         model_data=f"s3://{BUCKET_NAME}/{model_path}",
         role=role,
         framework_version='2.0.0',
         py_version='py310',
-        entry_point='inference.py'
+        entry_point='inference.py',
+        sagemaker_session=sm_session
     )
+
+    model.deploy(
+        initial_instance_count=1,
+        instance_type='ml.g5.xlarge'   # Example of a more powerful instance type
+    )
+
+    print('Model Deployment is deployed')
 
     print('Job is Finished')

@@ -67,6 +67,7 @@ class FireDataset(Dataset):
     def __getitem__(self, idx):
         # img_path = self.metadata[idx]['local_path']
         img_path = os.path.basename(self.metadata[idx]['image_location'])
+        # print("Train dir:", self.train_dir, "\nImage Path:", img_path)
         img_path = os.path.join(self.train_dir, img_path)
         image = Image.open(img_path).convert('RGB')
         label = self.metadata[idx]['label']
@@ -218,7 +219,8 @@ if __name__ == '__main__':
     sm_session = sagemaker.Session(boto3.Session(region_name=args.region))
     sm_role = sagemaker.get_execution_role(sm_session)
     sagemaker_client = sm_session.boto_session.client('sagemaker')
-    feature_store_client = sm_session.boto_session.client('sagemaker-featurestore-runtime')
+
+    print("train_dir:", args.train_dir)
 
     print("Setting up tracking and Experiment")
     mlflow.set_tracking_uri(tracking_server_arn)
@@ -252,6 +254,7 @@ if __name__ == '__main__':
     )
 
     print('## Metadata Loaded')
+    print(f'{len(metadata)} Metadata loaded')
     # -----------------------------------------------
 
     print("Initializing model")
@@ -316,6 +319,7 @@ if __name__ == '__main__':
         )
 
         torch.save(best_model_state, model_path)
+        torch.save(best_model_state, f'/opt/ml/model/model.pth')
         mlflow.pytorch.log_model(model, artifact_path="models")
 
         mlflow.end_run(status='FINISHED')

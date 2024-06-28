@@ -14,9 +14,9 @@ def get_deployment_step(
     region: str,
     
     # test_metadata_prefix: str,
-    # best_model_prefix: str,
+    model_prefix: str,
     # test_metadata_file: str,
-    # best_model_file: str,
+    model_filename: str,
     # result_prefix: str,
     # data_dir: str,
     model_package_arn: str
@@ -37,9 +37,9 @@ def get_deployment_step(
             '--bucket_name', bucket_name,
             # '--best_model_bucket', bucket_name,
             # '--test_metadata_prefix', test_metadata_prefix,
-            # '--best_model_prefix', best_model_prefix,
+            '--model_prefix', model_prefix,
             # '--test_metadata_file', test_metadata_file,
-            # '--best_model_file', best_model_file,
+            '--model_filename', model_filename,
             # '--result_bucket', bucket_name,
             # '--result_prefix', result_prefix,
             # '--result_file', 'eva-result-',

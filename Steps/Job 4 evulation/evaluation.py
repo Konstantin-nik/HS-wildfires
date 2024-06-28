@@ -103,12 +103,12 @@ if __name__ == '__main__':
     args = parse_args()
 
     boto_session = boto3.Session()
-    region = boto_session.region_name
+    # region = boto_session.region_name
 
-    print(region)
+    # print(region)
     print(args.region)
 
-    sm = boto3.client('sagemaker', region_name='eu-central-1')
+    sm = boto3.client('sagemaker', region_name=args.region)
 
     s3 = boto3.client('s3')
     print('Evaulation job is started')

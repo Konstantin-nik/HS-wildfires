@@ -1,3 +1,0 @@
-mlflow==2.13.2
-torchinfo
-sagemaker-mlflow==0.1.0

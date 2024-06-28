@@ -1,47 +1,58 @@
 from sagemaker.workflow.steps import ProcessingStep
+from sagemaker.workflow.functions import Join
 from sagemaker.sklearn.processing import ScriptProcessor
+from sagemaker.processing import ProcessingInput, ProcessingOutput
 import sagemaker
 
 
 def get_evaluator_step(
     project: str,
     bucket_name: str,
-    process_instance_count_param: int,
-    process_instance_type_param: str,
+    evaluator_instance_count: int,
+    evaluator_instance_type: str,
     evaluation_image_uri: str,
-    region: str,
-    test_metadata_prefix: str,
-    best_model_prefix: str,
-    test_metadata_file: str,
-    best_model_file: str,
+    training_step,
     result_prefix: str,
-    data_dir: str,
-    model_package_arn: str
+    region: str,
 ):
     evaluation_processor = ScriptProcessor(
         role=sagemaker.get_execution_role(),
         image_uri=evaluation_image_uri,
         command=['python3'],
-        instance_count=process_instance_count_param,
-        instance_type=process_instance_type_param
+        instance_count=evaluator_instance_count,
+        instance_type=evaluator_instance_type
     )
 
     return ProcessingStep(
         name=f"{project}-evaluation",
         processor=evaluation_processor,
-        code="../data/evaluation.py",
+        code="../model/evaluation.py",
+        inputs=[
+            ProcessingInput(
+                source="s3://wildfires/data/test",
+                destination="/opt/ml/processing/input",
+            ),
+            ProcessingInput(
+                source=training_step.properties.ModelArtifacts.S3ModelArtifacts,
+                destination="/opt/ml/processing/model",
+            ),
+        ],
+        outputs=[
+            ProcessingOutput(
+                source="/opt/ml/processing/output",
+                destination=Join(
+                    on="/",
+                    values=[f"s3://{bucket_name}", "evaluation_results"],
+                ),
+                output_name="evaluation_result",
+            )
+        ],
         job_arguments=[
-            '--test_metadata_bucket', bucket_name,
-            '--best_model_bucket', bucket_name,
-            '--test_metadata_prefix', test_metadata_prefix,
-            '--best_model_prefix', best_model_prefix,
-            '--test_metadata_file', test_metadata_file,
-            '--best_model_file', best_model_file,
-            '--result_bucket', bucket_name,
+            '--bucket', bucket_name,
+            '--model_path', '/opt/ml/processing/model',
+            '--data_path', '/opt/ml/processing/input',
             '--result_prefix', result_prefix,
             '--result_file', 'eva-result-',
-            '--data_dir', data_dir,
-            '--model_package_arn', model_package_arn,
             '--region', region
         ],
     )

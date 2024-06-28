@@ -15,7 +15,7 @@ import pandas as pd
 
 from datetime import datetime
 from logging.handlers import MemoryHandler
-from botocore.exceptions import ClientError 
+from botocore.exceptions import ClientError
 from sklearn.model_selection import train_test_split
 from sagemaker.feature_store.feature_group import FeatureGroup, FeatureDefinition, FeatureTypeEnum
 

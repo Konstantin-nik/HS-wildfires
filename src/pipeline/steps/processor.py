@@ -7,8 +7,8 @@ from sagemaker.sklearn.processing import ScriptProcessor
 def get_processor_step(
     project: str,
     bucket_name: str,
-    process_instance_count_param: int,
-    process_instance_type_param: str,
+    process_instance_count: int,
+    process_instance_type: str,
     sklearn_image_uri: str,
     region: str,
     seed: int
@@ -17,8 +17,8 @@ def get_processor_step(
         role=sagemaker.get_execution_role(),
         image_uri=sklearn_image_uri,
         command=['python3'],
-        instance_count=process_instance_count_param,
-        instance_type=process_instance_type_param
+        instance_count=process_instance_count,
+        instance_type=process_instance_type
     )
 
     return ProcessingStep(

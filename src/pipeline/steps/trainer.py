@@ -9,8 +9,8 @@ def get_trainer_step(
     project: str,
     bucket_name: str,
     tracking_server_arn: str,
-    train_instance_count_param: int,
-    train_instance_type_param: str,
+    train_instance_count: int,
+    train_instance_type: str,
     region: str,
     epochs_num: int,
     batch_size: int,
@@ -21,8 +21,8 @@ def get_trainer_step(
     estimator = PyTorch(
         role=sagemaker.get_execution_role(),
         entry_point="../model/training.py",
-        instance_count=train_instance_count_param,
-        instance_type=train_instance_type_param,
+        instance_count=train_instance_count,
+        instance_type=train_instance_type,
         input_mode='File',
         py_version="py39",
         framework_version="1.13",
@@ -30,7 +30,7 @@ def get_trainer_step(
             'MLFLOW_TRACKING_URIs': tracking_server_arn,
             'MLFLOW_EXPERIMENT_NAME': f"{project}-training-pipeline",
         },
-        dependencies=['../model/requirements.txt'],
+        dependencies=['requirements.txt'],
         hyperparameters={
             'num-epochs': epochs_num,
             'batch-size': batch_size,
@@ -38,13 +38,15 @@ def get_trainer_step(
             'run-name': run_name,
             'bucket': bucket_name,
             'region': region,
+            'train_dir': '/opt/ml/input/data/data_input',
             'seed': seed
         },
         output_path=f's3://{bucket_name}/models/'
     )
 
     data_input = TrainingInput(
-        s3_data="s3://wildfires/data/train/"
+        s3_data="s3://wildfires/data/train/",
+        input_mode='File'
     )
 
     return TrainingStep(
