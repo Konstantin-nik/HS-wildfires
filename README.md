@@ -10,7 +10,7 @@ The code presented here was developed for SageMaker, and its proper testing shou
 
 ### MLOps Playground
 
-In the folder `mlops_playground`, all code during the course is playsed. The `Step` folder containg the development process for the pipline and the file `src` contains the final pipeline.
+In the folder `mlops_playground`, all code during the course is placed. The `Step` folder containg the development process for the pipline and the file `src` contains the final pipeline.
 
 ## Data
 
